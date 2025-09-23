@@ -16,12 +16,16 @@ plt.figure(figsize=(7,5)) # skapa en ny figur
 pichu = dataf.query("label==0") # filtrerar data att få pichu punkter
 pikachu= dataf.query("label==1") # filtrerar data att få pikachu punkter
 # plottar pichu punkter i blått
-plt.scatter(pichu["width"], pichu["height"], color="blue", label="Pichu (0)", alpha=0.7)
+plt.scatter(pichu["width"], pichu["height"], color="blue", label="Pichu (0)", s=30, alpha=0.5)
 # plottar pikachu punkter i gul
-plt.scatter(pikachu["width"], pikachu["height"], color="Yellow", label="Pikachu (1)", alpha=0.7)
+plt.scatter(pikachu["width"], pikachu["height"], color="Yellow", label="Pikachu (1)", s=60 , alpha=0.7)
 plt.xlabel("Width (cm)")
 plt.ylabel("Height (cm)")
 plt.title("Pichu vs Pikachu - Data Points")
 plt.legend()
 plt.grid(True)
 plt.show()
+
+# läs in test punnkter
+x=np.array([25, 24.2, 22, 20.5])
+y=np.array([32, 31.5 ,34, 34])
