@@ -2,30 +2,64 @@
 # importera bibliotek och create .venv file
 import matplotlib.pyplot as plt
 import math
-import pandas as pa
 import numpy as np
+import re
 
-# Läs in datan och spara i lämplig datastruktur
-dataf = pa.read_csv("datapoints.txt", skiprows=1, header=None, names=["width","height","label"])
-print(dataf) # double check the dataframe , number of rows and columns
-dimansion = dataf[["width", "height"]].values # alla width och height kommer spara i dimsnsion dataform
-Labl = dataf["label"].values # alla labels (0,1) kommer spara i dataform labl
-
-# Plotta data
-plt.figure(figsize=(7,5)) # skapa en ny figur
-pichu = dataf.query("label==0") # filtrerar data att få pichu punkter
-pikachu= dataf.query("label==1") # filtrerar data att få pikachu punkter
-# plottar pichu punkter i blått
-plt.scatter(pichu["width"], pichu["height"], color="blue", label="Pichu (0)", s=30, alpha=0.5)
-# plottar pikachu punkter i gul
-plt.scatter(pikachu["width"], pikachu["height"], color="Yellow", label="Pikachu (1)", s=60 , alpha=0.7)
+# läs in data från datapoints.txt fil 
+dimansion=[] # en lista för att spara width och height
+Labl= [] # en lista för att spara labels
+with open("datapoints.txt" ,"r") as f:
+    f.readline()  # hoppa över första raden (header)
+    for line in f:
+        parts= line.strip().split(",")
+        width= float (parts[0])
+        height= float(parts[1])
+        Label= float(parts[2])
+        dimansion.append([width , height])
+        Labl.append(Label)       
+        #print(dimansion)
+        #print(Labl)
+dimansion = np.array(dimansion) # konvertera till numpy-arrays
+Labl = np.array(Labl)
+# Plotta data 
+plt.figure(figsize=(7,5))
+pichu= np.where(Labl==0) # hämta index för pichu.
+pikachu = np.where(Labl == 1) # hämta index för pikachu.
+plt.scatter(dimansion[pichu, 0], dimansion[pichu, 1],
+            color="blue", label="Pichu (0)", s=30, alpha=0.5) # plottar pichu punkter i blått
+plt.scatter(dimansion[pikachu, 0], dimansion[pikachu, 1],
+            color="yellow", label="Pikachu (1)", s=60, alpha=0.7) # plottar pikachu punkter i gult
 plt.xlabel("Width (cm)")
 plt.ylabel("Height (cm)")
 plt.title("Pichu vs Pikachu - Data Points")
 plt.legend()
 plt.grid(True)
 plt.show()
-
 # läs in test punnkter
-x=np.array([25, 24.2, 22, 20.5])
-y=np.array([32, 31.5 ,34, 34])
+testpoints=[]
+with open("testpoints.txt", "r") as test:
+    test.readline()
+    for T in test:
+        T= T.strip()
+        point= T.split("(")[1].split(")")[0]
+        x,y= map(float, point.split(","))
+        testpoints.append([x,y])   
+    
+# en funktion för att beräkna avståndet mellan punkter
+def euclidean(a, b):
+     return np.sqrt(np.power(a[0]-b[0], 2) + np.power(a[1]-b[1], 2))
+for pt in testpoints: # loopa igenom testpunkterna och klassificera
+    try:
+        if pt[0]<0 or pt[1]<0:  # Kontrollera negativa värden
+            raise ValueError(f"punkten{pt[0]}{pt[1]} inhåller negativa väredn")
+        distances = [euclidean(pt, x) for x in dimansion]
+        nearest_index = np.argmin(distances)      # index för närmaste punkt
+        predicted_label = Labl[nearest_index]     # hämta label för den närmaste
+        if predicted_label == 1:
+            print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pikachu")
+        else:
+            print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pichu")
+    except ValueError as err:  
+        print(err)
+        print(f"Fel: punkten ({pt[0]}, {pt[1]}) innehåller icke-numeriska värden, hoppar över")
+        continue
