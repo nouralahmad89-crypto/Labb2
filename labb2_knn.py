@@ -55,7 +55,7 @@ def euclidean(a, b):
      return np.sqrt(np.power(a[0]-b[0], 2) + np.power(a[1]-b[1], 2))
 for pt in testpoints: # loopa igenom testpunkterna och klassificera
     try:
-        # covert till float
+        # convert till float
         pt[0]= float(pt[0]) 
         pt[1]= float(pt[1])
     except ValueError :  
@@ -73,7 +73,8 @@ for pt in testpoints: # loopa igenom testpunkterna och klassificera
     else:
         print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pichu")
   # 10-NN (k=10)
-def classify_knn (testpoints, dimansion,labl, k=10):
+def classify_knn (testpoints,labl, k=10):
+
     resluts=[] # spara all resluts from Euclidean methon
     for p in testpoints:
          # Kontrollera negativa eller icke-numeriska värden
@@ -85,9 +86,29 @@ def classify_knn (testpoints, dimansion,labl, k=10):
         if x < 0 or y < 0:
             print(f" hoppa över negativa väredn: ({x}, {y})")
             continue
-        for x in dimansion:
-         resluts=resluts.append(euclidean(p,x))
-    index_sort= np.argsort(resluts)[:k]
+        resluts=[euclidean(p,x)  for x in dimansion] # Beräkna alla avstånd
+        d = list(zip(resluts, range(len(resluts)))) # (results, index)
+        d.sort()
+        k_values= d[:k] # Ta de k närmaste indexen
+        counter_pichu=0
+        counter_pikachu=0
+        for value in k_values:
+            if labl[value[1]]==0:
+                counter_pichu+=1
+            elif labl[value[1]]==1:
+              counter_pikachu+=1
+        if counter_pichu > counter_pikachu:  # Bestäm klass baserat på flest röster
+          predicted = 0
+        else:
+          predicted = 1  
+        if predicted==0:
+            print(f"Sample with (width, height): {x}, {y} classified as Pichu with KNN-10")
+        else:
+              print(f"Sample with (width, height):{x}, {y} classified as Pikatchu with KNN-10")
+      
+     
+classify_knn (testpoints,labl, k=10)
+
     
 
 
