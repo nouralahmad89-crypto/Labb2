@@ -1,9 +1,7 @@
 # Labb 2: Klassificering av Pichu och Pikachu med KNN
 # importera bibliotek och skapa .venv file
 import matplotlib.pyplot as plt
-import math
 import numpy as np
-import re
 
 # läs in data från datapoints.txt fil 
 dimansion=[] # en lista för att spara width och height
@@ -53,27 +51,36 @@ except FileNotFoundError:
 # en funktion för att beräkna avståndet mellan punkter
 def euclidean(a, b):
      return np.sqrt(np.power(a[0]-b[0], 2) + np.power(a[1]-b[1], 2))
-for pt in testpoints: # loopa igenom testpunkterna och klassificera
-    try:
-        # convert till float
-        pt[0]= float(pt[0]) 
-        pt[1]= float(pt[1])
-    except ValueError :  
-             print(f"Fel: punkten ({pt[0]}, {pt[1]}) innehåller icke-numeriska värden, hoppar över")
-             continue # Hoppa över den här punkten               
-    if pt[0]<0 or pt[1]<0:  # Kontrollera negativa värden
-        print(f"punkten{pt[0]},{pt[1]} inhåller negativa väredn, hpoppa över")
-        continue # hoppa över den här punkten
+ #Klassificera testpunkter med 1-NN (närmsta granne)
+def classify_1nn(testpoints, dimansion, labl):    
+    for pt in testpoints: # loopa igenom testpunkterna och klassificera
+        try:
+           # convert till float
+          pt[0]= float(pt[0]) 
+          pt[1]= float(pt[1])
+        except ValueError :  
+            print(f"Fel: punkten ({pt[0]}, {pt[1]}) innehåller icke-numeriska värden, hoppar över")
+            continue # Hoppa över den här punkten               
+        if pt[0]<0 or pt[1]<0:  # Kontrollera negativa värden
+          print(f"punkten{pt[0]},{pt[1]} inhåller negativa väredn, hpoppa över")
+          continue # hoppa över den här punkten
     # Beräkna avstånd och klassificera   
-    distances = [euclidean(pt, x) for x in dimansion]
-    nearest_index = np.argmin(distances)      # index för närmaste punkt
-    predicted_label = labl[nearest_index]     # hämta label för den närmaste
-    if predicted_label == 1:
-        print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pikachu")
-    else:
-        print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pichu")
+        distances = [euclidean(pt, x) for x in dimansion]
+        nearest_index = np.argmin(distances)      # index för närmaste punkt
+        predicted_label = labl[nearest_index]     # hämta label för den närmaste
+        if predicted_label == 1:
+          print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pikachu")
+        else:
+          print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pichu")
+classify_1nn(testpoints, dimansion, labl)   
+# Nu sk vi låta användern ange width och height och vi anropar funktionen
+W= input("ange figure width:") 
+H= input("ange figure height:")  
+user_input=[]
+user_input.append([W,H]) 
+classify_1nn(user_input, dimansion, labl)
   # 10-NN (k=10)
-def classify_knn (testpoints,labl, k=10):
+def classify_knn (testpoints,labl, k):
 
     resluts=[] # spara all resluts from Euclidean methon
     for p in testpoints:
