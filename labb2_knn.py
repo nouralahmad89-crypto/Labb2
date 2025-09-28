@@ -74,23 +74,23 @@ def classify_1nn(testpoints, dimansion, labl):
           print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pichu")
 classify_1nn(testpoints, dimansion, labl)   
 # Nu sk vi låta användern ange width och height och vi anropar funktionen
-W= input("ange figure width:") 
-H= input("ange figure height:")  
+W= input("input figure width:") 
+H= input("iput figure height:")  
 user_input=[]
 user_input.append([W,H]) 
 classify_1nn(user_input, dimansion, labl)
   # 10-NN (k=10)
-def classify_knn (testpoints,labl, k):
+def classify_10knn (testpoints,labl,dimansion,k):
 
     resluts=[] # spara all resluts from Euclidean methon
     for p in testpoints:
          # Kontrollera negativa eller icke-numeriska värden
         try:
-            x, y = float(p[0]), float(p[1])
+            p[0], p[1] = float(p[0]), float(p[1])
         except ValueError:
             print(f"hoppa över icke-numeriska vären({p[0]}, {p[1]})")
             continue    
-        if x < 0 or y < 0:
+        if p[0] < 0 or p[1] < 0:
             print(f" hoppa över negativa väredn: ({x}, {y})")
             continue
         resluts=[euclidean(p,x)  for x in dimansion] # Beräkna alla avstånd
@@ -109,12 +109,10 @@ def classify_knn (testpoints,labl, k):
         else:
           predicted = 1  
         if predicted==0:
-            print(f"Sample with (width, height): {x}, {y} classified as Pichu with KNN-10")
+            print(f"Sample with (width, height): {p[0]}, {p[1]} classified as Pichu with KNN-10")
         else:
-              print(f"Sample with (width, height):{x}, {y} classified as Pikatchu with KNN-10")
-      
-     
-classify_knn (testpoints,labl, k=10)
+              print(f"Sample with (width, height):{p[0]}, {p[1]} classified as Pikatchu with KNN-10")        
+classify_10knn (testpoints,labl,dimansion, k=10)
 
     
 
