@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# läs in data från datapoints.txt fil 
+# 1. läs in data från datapoints.txt fil 
 dimansion=[] # en lista för att spara width och height
 labl= [] # en lista för att spara labels
 try:
@@ -36,7 +36,7 @@ plt.title("Pichu vs Pikachu - Data Points")
 plt.legend()
 plt.grid(True)
 plt.show()
-# läs in test punnkter
+# läs in test punkter
 testpoints=[]
 try:
     with open("testpoints.txt", "r") as test:
@@ -72,7 +72,7 @@ def classify_1nn(testpoints, dimansion, labl):
           print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pikachu")
         else:
           print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pichu")
-classify_1nn(testpoints, dimansion, labl)   
+classify_1nn(testpoints, dimansion, labl)   # anropa funktion
 # Nu sk vi låta användern ange width och height och vi anropar funktionen
 W= input("input figure width:") 
 H= input("iput figure height:")  
@@ -109,11 +109,29 @@ def classify_10knn (testpoints,labl,dimansion,k):
         else:
           predicted = 1  
         if predicted==0:
-            print(f"Sample with (width, height): {p[0]}, {p[1]} classified as Pichu with KNN-10")
+            print(f"Sample with (width, height): {p[0]}, {p[1]} classified as Pichu with KNN-{k}")
         else:
-              print(f"Sample with (width, height):{p[0]}, {p[1]} classified as Pikatchu with KNN-10")        
+              print(f"Sample with (width, height):{p[0]}, {p[1]} classified as Pikatchu with KNN-{k}")        
 classify_10knn (testpoints,labl,dimansion, k=10)
+# tänkte plota testpunkter
+testpoints= np.array(testpoints) # convert till numoy-array
+plt.figure(figsize=(7,5))
+plt.scatter(testpoints[:,0], testpoints[:,1], color='red',
+             label='Testpunkter(?)', s=45 , alpha= 0.9) # plotta test punkter i röd
+plt.scatter(dimansion[pichu, 0], dimansion[pichu, 1],
+            color="blue", label="Pichu (0)", s=30, alpha=0.5) # plottar pichu punkter i blått
+plt.scatter(dimansion[pikachu, 0], dimansion[pikachu, 1],
+            color="yellow", label="Pikachu (1)", s=60, alpha=0.7) # plottar pikachu punkter i gult
+plt.xlabel("Width")
+plt.ylabel("Height")
+plt.title("Pichu vs Pikachu(Med Test Punkter) - Data Points")
+plt.legend()
+plt.grid(True)
+plt.show()
 
+
+
+      
     
 
 
