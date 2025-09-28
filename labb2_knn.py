@@ -114,7 +114,7 @@ def classify_10knn (testpoints,labl,dimansion,k):
               print(f"Sample with (width, height):{p[0]}, {p[1]} classified as Pikatchu with KNN-{k}")        
 classify_10knn (testpoints,labl,dimansion, k=10)
 # tänkte plota testpunkter
-testpoints= np.array(testpoints) # convert till numoy-array
+testpoints= np.array(testpoints) # convert till numpy-array
 plt.figure(figsize=(7,5))
 plt.scatter(testpoints[:,0], testpoints[:,1], color='red',
              label='Testpunkter(?)', s=45 , alpha= 0.9) # plotta test punkter i röd
