@@ -2,6 +2,7 @@
 # importera bibliotek och skapa .venv file
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 
 # 1. läs in data från datapoints.txt fil 
 dimansion=[] # en lista för att spara width och height
@@ -128,7 +129,37 @@ plt.title("Pichu vs Pikachu(Med Test Punkter) - Data Points")
 plt.legend()
 plt.grid(True)
 plt.show()
-
+# BONUSUPPGIFTER
+# 3)Dela in ursprungsdatan slumpmässigt
+# Extrahera punkterna med hjälp av index (pichu) och (pikachu)
+pichu_points = dimansion[pichu] 
+pikachu_points = dimansion[pikachu]
+#Slumpa ordningen i varje klass
+np.random.shuffle(pichu_points) 
+np.random.shuffle(pikachu_points) 
+pichu_train, pichu_test = pichu_points[:50], pichu_points[50:75] # dela test/träning punkter(class pichu)
+pikachu_train, pikachu_test = pikachu_points[:50], pikachu_points[50:75] # dela test/träning punkter(class pikachu)
+X_train = np.vstack((pichu_train, pikachu_train)) # slår ihop pichu och pikachu till en träningsset.
+y_train = np.array([0]*len(pichu_train) + [1]*len(pikachu_train)) 
+X_test = np.vstack((pichu_test, pikachu_test)) #slår ihop pichu och pikachu till en test set.
+y_test = np.array([0]*len(pichu_test) + [1]*len(pikachu_test)) 
+# slumpmäsig blandning av train och test data 
+train_indx= np.arange(len(X_train)) # array innehåller alla indecies
+np.random.shuffle(train_indx) # shuffle med index så punkter och label fortfarande matchar
+X_train= X_train[train_indx]
+y_train= y_train[train_indx]
+test_indx = np.arange(len(X_test))
+np.random.shuffle(test_indx) # blander punkter
+X_test = X_test[test_indx]
+y_test = y_test[test_indx]
+ #100 points för träning data
+print("X_train shape:", X_train.shape) 
+print("y_train shape:", y_train.shape)
+# 50 points för test data
+print("X_test shape:", X_test.shape)
+print("y_test shape:", y_test.shape)
+# 4)  Beräkna noggranheten genom följande formel
+#  accuracy = (#TP+#TN)/(total)
 
 
       
