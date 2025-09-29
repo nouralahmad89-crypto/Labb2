@@ -1,10 +1,12 @@
-# Labb 2: Klassificering av Pichu och Pikachu med KNN
-# importera bibliotek och skapa .venv file
+""" Labb 2: Klassificering av Pichu och Pikachu med KNN
+ importera bibliotek och skapa .venv file"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import random
 
-# 1. läs in data från datapoints.txt fil 
+# 1) läs in data från datapoints.txt 
+
 dimansion=[] # en lista för att spara width och height
 labl= [] # en lista för att spara labels
 try:
@@ -23,7 +25,8 @@ except FileNotFoundError:
     raise FileNotFoundError ("File not found, make sure path is correct!")        
 dimansion = np.array(dimansion) # konvertera till numpy-arrays
 labl = np.array(labl)
-# Plotta data 
+
+# ----- Plotta data -----
 plt.figure(figsize=(7,5))
 pichu= np.where(labl==0) # hämta index för pichu.
 pikachu = np.where(labl == 1) # hämta index för pikachu.
@@ -37,6 +40,7 @@ plt.title("Pichu vs Pikachu - Data Points")
 plt.legend()
 plt.grid(True)
 plt.show()
+
 # läs in test punkter
 testpoints=[]
 try:
@@ -48,10 +52,12 @@ try:
         x,y= point.split(",")
         testpoints.append([x,y])
 except FileNotFoundError:   
-       raise FileNotFoundError("File not found, make sure path is correct!")     
+       raise FileNotFoundError("File not found, make sure path is correct!")
+     
 # en funktion för att beräkna avståndet mellan punkter
 def euclidean(a, b):
      return np.sqrt(np.power(a[0]-b[0], 2) + np.power(a[1]-b[1], 2))
+
  #Klassificera testpunkter med 1-NN (närmsta granne)
 def classify_1nn(testpoints, dimansion, labl):    
     for pt in testpoints: # loopa igenom testpunkterna och klassificera
@@ -74,15 +80,18 @@ def classify_1nn(testpoints, dimansion, labl):
         else:
           print(f"Sample with (width, height): ({pt[0]}, {pt[1]}) classified as Pichu")
 classify_1nn(testpoints, dimansion, labl)   # anropa funktion
-# Nu sk vi låta användern ange width och height och vi anropar funktionen
+"""
+Nu sk vi låta användern ange width och height 
+och vi anropar funktionen
+"""
 W= input("input figure width:") 
 H= input("iput figure height:")  
 user_input=[]
 user_input.append([W,H]) 
 classify_1nn(user_input, dimansion, labl)
-  # 10-NN (k=10)
-def classify_10knn (testpoints,labl,dimansion,k):
 
+# 10-NN (k=10)
+def classify_10knn (testpoints,labl,dimansion,k):
     resluts=[] # spara all resluts from Euclidean methon
     for p in testpoints:
          # Kontrollera negativa eller icke-numeriska värden
@@ -114,7 +123,8 @@ def classify_10knn (testpoints,labl,dimansion,k):
         else:
               print(f"Sample with (width, height):{p[0]}, {p[1]} classified as Pikatchu with KNN-{k}")        
 classify_10knn (testpoints,labl,dimansion, k=10)
-# tänkte plota testpunkter
+
+# -----tänkte plota testpunkter -----
 testpoints= np.array(testpoints) # convert till numpy-array
 plt.figure(figsize=(7,5))
 plt.scatter(testpoints[:,0], testpoints[:,1], color='red',
@@ -129,40 +139,112 @@ plt.title("Pichu vs Pikachu(Med Test Punkter) - Data Points")
 plt.legend()
 plt.grid(True)
 plt.show()
-# BONUSUPPGIFTER
-# 3)Dela in ursprungsdatan slumpmässigt
+
+""" BONUSUPPGIFTER
+ 3)Dela in ursprungsdatan slumpmässigt """
 # Extrahera punkterna med hjälp av index (pichu) och (pikachu)
 pichu_points = dimansion[pichu] 
 pikachu_points = dimansion[pikachu]
 #Slumpa ordningen i varje klass
 np.random.shuffle(pichu_points) 
-np.random.shuffle(pikachu_points) 
-pichu_train, pichu_test = pichu_points[:50], pichu_points[50:75] # dela test/träning punkter(class pichu)
-pikachu_train, pikachu_test = pikachu_points[:50], pikachu_points[50:75] # dela test/träning punkter(class pikachu)
+np.random.shuffle(pikachu_points)
+ # dela test/träning punkter(class pichu) 
+pichu_train, pichu_test = pichu_points[:50], pichu_points[50:75]
+ # dela test/träning punkter(class pikachu)
+pikachu_train, pikachu_test = pikachu_points[:50], pikachu_points[50:75]
 X_train = np.vstack((pichu_train, pikachu_train)) # slår ihop pichu och pikachu till en träningsset.
-y_train = np.array([0]*len(pichu_train) + [1]*len(pikachu_train)) 
+Y_train = np.array([0]*len(pichu_train) + [1]*len(pikachu_train)) 
 X_test = np.vstack((pichu_test, pikachu_test)) #slår ihop pichu och pikachu till en test set.
-y_test = np.array([0]*len(pichu_test) + [1]*len(pikachu_test)) 
+Y_test = np.array([0]*len(pichu_test) + [1]*len(pikachu_test)) 
 # slumpmäsig blandning av train och test data 
 train_indx= np.arange(len(X_train)) # array innehåller alla indecies
 np.random.shuffle(train_indx) # shuffle med index så punkter och label fortfarande matchar
 X_train= X_train[train_indx]
-y_train= y_train[train_indx]
+Y_train= Y_train[train_indx]
 test_indx = np.arange(len(X_test))
 np.random.shuffle(test_indx) # blander punkter
 X_test = X_test[test_indx]
-y_test = y_test[test_indx]
+Y_test = Y_test[test_indx]
  #100 points för träning data
 print("X_train shape:", X_train.shape) 
-print("y_train shape:", y_train.shape)
+print("y_train shape:", Y_train.shape)
 # 50 points för test data
 print("X_test shape:", X_test.shape)
-print("y_test shape:", y_test.shape)
-# 4)  Beräkna noggranheten genom följande formel
-#  accuracy = (#TP+#TN)/(total)
+print("y_test shape:", Y_test.shape)
 
+""" 4)  Beräkna noggranheten
+  accuracy = (#TP+#TN)/(total)
+"""
+def evaluate_KNN(X_train, Y_train, X_test, Y_test, k=10):
+    """
+    Klassificera alla testpunkter med K-10NN och beräkna accuracy.
+    Pikachu = positiv, Pichu = negativ
+    """
+    counter = 0  # räknare för korrekta klassificeringar
+    for i, pt in enumerate(X_test):  # loop genom alla testpunkter
+        distances = [euclidean(pt, x) for x in X_train] #beräkna avstånd till alla träningspunkter
+        k_indices = np.argsort(distances)[:k] # hämta index för de k närmaste punkterna
+        k_labels = Y_train[k_indices]  #hämta deras labels
+        count_0 = sum(1 for lbl in k_labels if lbl == 0)   #  majoritetsröstning
+        count_1 = sum(1 for lbl in k_labels if lbl == 1)
+        if count_0 > count_1:
+            predicted = 0
+        else:
+            predicted = 1
+        if predicted == Y_test[i]: # jämför med facit
+            counter += 1
+    accuracy = counter / len(Y_test)  #beräkna accuracy 
+    return accuracy
+
+# Nu ska vi kör 10 gånger
+accuracies = []  # här sparas alla 10 accuracy
+
+for run in range(10):
+    # slumpa om ordningen för pichu och pikachu
+    np.random.shuffle(pichu_points)
+    np.random.shuffle(pikachu_points)
+    # dela train/test (samma som innan)
+    pichu_train, pichu_test = pichu_points[:50], pichu_points[50:75]
+    pikachu_train, pikachu_test = pikachu_points[:50], pikachu_points[50:75]
+    X_train = np.vstack((pichu_train, pikachu_train))
+    Y_train = np.array([0]*len(pichu_train) + [1]*len(pikachu_train))
+    X_test = np.vstack((pichu_test, pikachu_test))
+    Y_test = np.array([0]*len(pichu_test) + [1]*len(pikachu_test))
+    # blanda train/test så ordningen blir slumpmässig
+    train_idx = np.arange(len(X_train))
+    np.random.shuffle(train_idx)
+    X_train, Y_train = X_train[train_idx], Y_train[train_idx]
+
+    test_idx = np.arange(len(X_test))
+    np.random.shuffle(test_idx)
+    X_test, Y_test = X_test[test_idx], Y_test[test_idx]
+    # beräkna accuracy
+    acc = evaluate_KNN(X_train, Y_train, X_test, Y_test, k=10)
+    accuracies.append(acc)
+    print(f"Körning {run+1}: Accuracy = {acc:.2f}")
+
+# --- Plotta ---
+plt.plot(range(1, 11), accuracies, marker="o", color="blue")
+plt.title("Accuracy för 10 upprepade körningar (10-NN)")
+plt.xlabel("Körning")
+plt.ylabel("Accuracy")
+plt.grid(True)
+plt.show()
+
+# --- Medelaccuracy ---
+mean_acc = np.mean(accuracies)
+print(f"Medelaccuracy över 10 körningar: {mean_acc:.2f}")
+
+ 
+
+
+        
+       
+
+       
 
       
-    
+
+   
 
 
